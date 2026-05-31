@@ -1,16 +1,16 @@
-import { useSignIn, useSignUp, useSSO } from "@clerk/expo";
+import { useSignIn, useSignUp } from "@clerk/expo";
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import { Link, useRouter, type Href } from "expo-router";
 import { useState, type ReactNode } from "react";
 import {
-    Image,
-    SafeAreaView,
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Image,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "../../constants/images";
 import { VerificationModal } from "./VerificationModal";
 
@@ -61,17 +61,8 @@ export function AuthScreen({
   footerActionHref,
 }: AuthScreenProps) {
   const router = useRouter();
-  const {
-    isLoaded: signInLoaded,
-    signIn,
-    setActive: setSignInActive,
-  } = useSignIn();
-  const {
-    isLoaded: signUpLoaded,
-    signUp,
-    setActive: setSignUpActive,
-  } = useSignUp();
-  const { startSSOFlow } = useSSO();
+  const { signIn } = useSignIn();
+  const { signUp } = useSignUp();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -82,7 +73,6 @@ export function AuthScreen({
 
   const isSignUp = flow === "sign-up";
   const showPasswordField = isSignUp;
-  const isLoaded = signInLoaded && signUpLoaded;
 
   const getErrorMessage = (error: unknown) => {
     if (typeof error === "string") {
@@ -123,19 +113,17 @@ export function AuthScreen({
   };
 
   const completeSession = async (
-    sessionId: string | null,
-    setActive: typeof setSignInActive,
+    finalize: () => Promise<{ error: { message?: string } | null }>,
   ) => {
-    if (!sessionId) {
-      throw new Error("Authentication completed without a session.");
+    const { error } = await finalize();
+    if (error) {
+      throw error;
     }
-
-    await setActive({ session: sessionId });
     router.replace("/");
   };
 
   const handlePrimaryPress = async () => {
-    if (!isLoaded || isBusy) {
+    if (!signIn || !signUp || isBusy) {
       return;
     }
 
@@ -146,25 +134,21 @@ export function AuthScreen({
       const emailAddress = email.trim();
 
       if (isSignUp) {
-        if (!signUp) {
-          throw new Error("Sign up is not ready yet.");
-        }
-
-        await signUp.create({
+        const { error } = await signUp.password({
           emailAddress,
           password,
         });
 
-        await signUp.prepareEmailAddressVerification({
-          strategy: "email_code",
-        });
+        if (error) {
+          throw error;
+        }
+
+        await signUp.verifications.sendEmailCode();
         openVerification();
         return;
       }
 
-      if (!signIn) {
-        throw new Error("Sign in is not ready yet.");
-      }
+      await signIn.create({ identifier: emailAddress });
 
       const { error } = await signIn.emailCode.sendCode({
         emailAddress,
@@ -183,7 +167,7 @@ export function AuthScreen({
   };
 
   const handleVerificationSubmit = async (code: string) => {
-    if (!isLoaded || isBusy) {
+    if (!signIn || !signUp || isBusy) {
       return;
     }
 
@@ -192,17 +176,15 @@ export function AuthScreen({
 
     try {
       if (isSignUp) {
-        if (!signUp || !setSignUpActive) {
-          throw new Error("Sign up verification is not ready yet.");
+        const { error } = await signUp.verifications.verifyEmailCode({ code });
+        if (error) {
+          throw error;
         }
 
-        await signUp.attemptEmailAddressVerification({ code });
-        await completeSession(signUp.createdSessionId, setSignUpActive);
+        if (signUp.status === "complete") {
+          await completeSession(() => signUp.finalize());
+        }
         return;
-      }
-
-      if (!signIn || !setSignInActive) {
-        throw new Error("Sign in verification is not ready yet.");
       }
 
       const { error } = await signIn.emailCode.verifyCode({ code });
@@ -211,7 +193,9 @@ export function AuthScreen({
         throw error;
       }
 
-      await completeSession(signIn.createdSessionId, setSignInActive);
+      if (signIn.status === "complete") {
+        await completeSession(() => signIn.finalize());
+      }
     } catch (error) {
       setErrorMessage(getErrorMessage(error));
     } finally {
@@ -222,30 +206,12 @@ export function AuthScreen({
   const handleSocialAuth = async (
     strategy: "oauth_google" | "oauth_facebook" | "oauth_apple",
   ) => {
-    if (!isLoaded || isBusy) {
-      return;
-    }
-
-    setIsBusy(true);
-    setErrorMessage(null);
-
-    try {
-      const { createdSessionId, setActive } = await startSSOFlow({ strategy });
-
-      if (!createdSessionId || !setActive) {
-        throw new Error("Unable to complete social sign-in.");
-      }
-
-      await setActive({ session: createdSessionId });
-      router.replace("/");
-    } catch (error) {
-      setErrorMessage(getErrorMessage(error));
-    } finally {
-      setIsBusy(false);
-    }
+    setErrorMessage(
+      `Social ${strategy.replace("oauth_", "")} sign-in needs a development build with native modules. Use email sign-in for now.`,
+    );
   };
 
-  if (!isLoaded) {
+  if (!signIn || !signUp) {
     return <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }} />;
   }
 
@@ -412,6 +378,10 @@ export function AuthScreen({
         onCodeChange={setVerificationCode}
         onSubmit={handleVerificationSubmit}
       />
+
+      {isSignUp ? (
+        <View nativeID="clerk-captcha" style={{ height: 0, width: 0 }} />
+      ) : null}
     </SafeAreaView>
   );
 }

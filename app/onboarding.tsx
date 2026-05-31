@@ -1,12 +1,7 @@
 import { useAuth } from "@clerk/expo";
 import { Link, Redirect } from "expo-router";
-import {
-    Image,
-    SafeAreaView,
-    Text,
-    TouchableOpacity,
-    View,
-} from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "../constants/images";
 
 export default function Onboarding() {
