@@ -8,12 +8,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        lingua: {
-          purple: "#6C4EF5",
-          deepPurple: "#5B3BF6",
-          blue: "#4D8BFF",
-          green: "#21C16B",
-        },
+        purple: "#6C4EF5",
+        deepPurple: "#5B3BF6",
+        blue: "#4D8BFF",
+        green: "#21C16B",
         semantic: {
           success: "#21C16B",
           warning: "#FFC800",

@@ -5,10 +5,10 @@
 
 /* Design system CSS variables (for web preview and global utilities) */
 :root {
-  --lingua-purple: #6c4ef5;
-  --lingua-deep-purple: #5b3bf6;
-  --lingua-blue: #4d8bff;
-  --lingua-green: #21c16b;
+  --purple: #6c4ef5;
+  --deep-purple: #5b3bf6;
+  --blue: #4d8bff;
+  --green: #21c16b;
 
   --success: #21c16b;
   --warning: #ffc800;
@@ -24,14 +24,17 @@
 }
 
 @layer utilities {
-  .bg-lingua-purple {
-    background-color: var(--lingua-purple);
+  .bg-purple {
+    background-color: var(--purple);
   }
-  .bg-lingua-blue {
-    background-color: var(--lingua-blue);
+  .bg-deep-purple {
+    background-color: var(--deep-purple);
   }
-  .bg-lingua-green {
-    background-color: var(--lingua-green);
+  .bg-blue {
+    background-color: var(--blue);
+  }
+  .bg-green {
+    background-color: var(--green);
   }
   .text-primary {
     color: var(--text-primary);
