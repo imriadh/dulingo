@@ -2,3 +2,64 @@
 @import "tailwindcss/preflight.css" layer(base);
 @import "tailwindcss/utilities.css";
 @import "nativewind/theme";
+
+/* Design system CSS variables (for web preview and global utilities) */
+:root {
+  --lingua-purple: #6c4ef5;
+  --lingua-deep-purple: #5b3bf6;
+  --lingua-blue: #4d8bff;
+  --lingua-green: #21c16b;
+
+  --success: #21c16b;
+  --warning: #ffc800;
+  --streak: #ff8a00;
+  --error: #ff4d4f;
+  --info: #4d8bff;
+
+  --text-primary: #0d132b;
+  --text-secondary: #6b7280;
+  --border: #e5e7eb;
+  --surface: #f6f7fb;
+  --background: #ffffff;
+}
+
+@layer utilities {
+  .bg-lingua-purple {
+    background-color: var(--lingua-purple);
+  }
+  .bg-lingua-blue {
+    background-color: var(--lingua-blue);
+  }
+  .bg-lingua-green {
+    background-color: var(--lingua-green);
+  }
+  .text-primary {
+    color: var(--text-primary);
+  }
+  .text-secondary {
+    color: var(--text-secondary);
+  }
+  .border-light {
+    border-color: var(--border);
+  }
+  .surface {
+    background-color: var(--surface);
+  }
+  .shadow-soft {
+    box-shadow: 0 6px 20px rgba(13, 19, 43, 0.06);
+  }
+}
+
+/* Utility to apply Poppins as the default font-family on web */
+@layer base {
+  body {
+    font-family:
+      Poppins,
+      system-ui,
+      -apple-system,
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      Arial;
+  }
+}
