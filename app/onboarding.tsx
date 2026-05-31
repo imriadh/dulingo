@@ -1,11 +1,10 @@
 import { Link } from "expo-router";
-import React from "react";
 import {
-    Image,
-    SafeAreaView,
-    Text,
-    TouchableOpacity,
-    View,
+  Image,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { images } from "../constants/images";
 
@@ -99,7 +98,7 @@ export default function Onboarding() {
         </View>
 
         <View style={{ marginBottom: 20 }}>
-          <Link href="/" asChild>
+          <Link href="/sign-up" asChild>
             <TouchableOpacity
               className="bg-[#6C4EF5] px-6 py-4 rounded-2xl flex-row items-center justify-between"
               style={{ paddingHorizontal: 24 }}
