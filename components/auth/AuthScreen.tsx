@@ -1,3 +1,4 @@
+import { useSignIn, useSignUp, useSSO } from "@clerk/expo";
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import { Link, useRouter, type Href } from "expo-router";
 import { useState, type ReactNode } from "react";
@@ -14,20 +15,32 @@ import { images } from "../../constants/images";
 import { VerificationModal } from "./VerificationModal";
 
 type AuthScreenProps = {
+  flow: "sign-in" | "sign-up";
   title: string;
   subtitle: string;
   primaryLabel: string;
   footerPrefix: string;
   footerActionLabel: string;
   footerActionHref: Href;
-  showPasswordField?: boolean;
 };
 
-function SocialButton({ label, icon }: { label: string; icon: ReactNode }) {
+function SocialButton({
+  label,
+  icon,
+  onPress,
+  disabled,
+}: {
+  label: string;
+  icon: ReactNode;
+  onPress: () => void;
+  disabled?: boolean;
+}) {
   return (
     <TouchableOpacity
       className="flex-row items-center rounded-[18px] border border-[#E5E7EB] bg-white px-5 py-4"
       activeOpacity={0.85}
+      disabled={disabled}
+      onPress={onPress}
     >
       <View className="w-8 items-center justify-center">{icon}</View>
       <Text className="flex-1 text-center text-[17px] font-medium text-[#0D132B]">
@@ -39,23 +52,202 @@ function SocialButton({ label, icon }: { label: string; icon: ReactNode }) {
 }
 
 export function AuthScreen({
+  flow,
   title,
   subtitle,
   primaryLabel,
   footerPrefix,
   footerActionLabel,
   footerActionHref,
-  showPasswordField = true,
 }: AuthScreenProps) {
   const router = useRouter();
-  const [email, setEmail] = useState("alex@gmail.com");
-  const [password, setPassword] = useState("password123");
+  const {
+    isLoaded: signInLoaded,
+    signIn,
+    setActive: setSignInActive,
+  } = useSignIn();
+  const {
+    isLoaded: signUpLoaded,
+    signUp,
+    setActive: setSignUpActive,
+  } = useSignUp();
+  const { startSSOFlow } = useSSO();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [verificationVisible, setVerificationVisible] = useState(false);
+  const [verificationCode, setVerificationCode] = useState("");
+  const [isBusy, setIsBusy] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handlePrimaryPress = () => {
+  const isSignUp = flow === "sign-up";
+  const showPasswordField = isSignUp;
+  const isLoaded = signInLoaded && signUpLoaded;
+
+  const getErrorMessage = (error: unknown) => {
+    if (typeof error === "string") {
+      return error;
+    }
+
+    if (error && typeof error === "object") {
+      const clerkError = error as {
+        message?: string;
+        errors?: { longMessage?: string; message?: string }[];
+      };
+
+      const firstError = clerkError.errors?.[0];
+      return (
+        firstError?.longMessage ??
+        firstError?.message ??
+        clerkError.message ??
+        "Something went wrong."
+      );
+    }
+
+    return "Something went wrong.";
+  };
+
+  const openVerification = () => {
+    setErrorMessage(null);
+    setVerificationCode("");
     setVerificationVisible(true);
   };
+
+  const closeVerification = () => {
+    if (isBusy) {
+      return;
+    }
+
+    setVerificationVisible(false);
+    setVerificationCode("");
+  };
+
+  const completeSession = async (
+    sessionId: string | null,
+    setActive: typeof setSignInActive,
+  ) => {
+    if (!sessionId) {
+      throw new Error("Authentication completed without a session.");
+    }
+
+    await setActive({ session: sessionId });
+    router.replace("/");
+  };
+
+  const handlePrimaryPress = async () => {
+    if (!isLoaded || isBusy) {
+      return;
+    }
+
+    setIsBusy(true);
+    setErrorMessage(null);
+
+    try {
+      const emailAddress = email.trim();
+
+      if (isSignUp) {
+        if (!signUp) {
+          throw new Error("Sign up is not ready yet.");
+        }
+
+        await signUp.create({
+          emailAddress,
+          password,
+        });
+
+        await signUp.prepareEmailAddressVerification({
+          strategy: "email_code",
+        });
+        openVerification();
+        return;
+      }
+
+      if (!signIn) {
+        throw new Error("Sign in is not ready yet.");
+      }
+
+      const { error } = await signIn.emailCode.sendCode({
+        emailAddress,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      openVerification();
+    } catch (error) {
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setIsBusy(false);
+    }
+  };
+
+  const handleVerificationSubmit = async (code: string) => {
+    if (!isLoaded || isBusy) {
+      return;
+    }
+
+    setIsBusy(true);
+    setErrorMessage(null);
+
+    try {
+      if (isSignUp) {
+        if (!signUp || !setSignUpActive) {
+          throw new Error("Sign up verification is not ready yet.");
+        }
+
+        await signUp.attemptEmailAddressVerification({ code });
+        await completeSession(signUp.createdSessionId, setSignUpActive);
+        return;
+      }
+
+      if (!signIn || !setSignInActive) {
+        throw new Error("Sign in verification is not ready yet.");
+      }
+
+      const { error } = await signIn.emailCode.verifyCode({ code });
+
+      if (error) {
+        throw error;
+      }
+
+      await completeSession(signIn.createdSessionId, setSignInActive);
+    } catch (error) {
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setIsBusy(false);
+    }
+  };
+
+  const handleSocialAuth = async (
+    strategy: "oauth_google" | "oauth_facebook" | "oauth_apple",
+  ) => {
+    if (!isLoaded || isBusy) {
+      return;
+    }
+
+    setIsBusy(true);
+    setErrorMessage(null);
+
+    try {
+      const { createdSessionId, setActive } = await startSSOFlow({ strategy });
+
+      if (!createdSessionId || !setActive) {
+        throw new Error("Unable to complete social sign-in.");
+      }
+
+      await setActive({ session: createdSessionId });
+      router.replace("/");
+    } catch (error) {
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setIsBusy(false);
+    }
+  };
+
+  if (!isLoaded) {
+    return <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }} />;
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
@@ -152,12 +344,19 @@ export function AuthScreen({
             <TouchableOpacity
               className="mt-2 h-[80px] items-center justify-center rounded-[24px] bg-[#6C4EF5]"
               activeOpacity={0.9}
+              disabled={isBusy}
               onPress={handlePrimaryPress}
             >
               <Text className="text-[20px] font-semibold text-white">
                 {primaryLabel}
               </Text>
             </TouchableOpacity>
+
+            {errorMessage ? (
+              <Text className="px-1 text-[14px] text-[#E11D48]">
+                {errorMessage}
+              </Text>
+            ) : null}
 
             <View className="mt-4 flex-row items-center">
               <View className="h-px flex-1 bg-[#E5E7EB]" />
@@ -171,14 +370,20 @@ export function AuthScreen({
               <SocialButton
                 label="Continue with Google"
                 icon={<FontAwesome name="google" size={22} color="#EA4335" />}
+                disabled={isBusy}
+                onPress={() => handleSocialAuth("oauth_google")}
               />
               <SocialButton
                 label="Continue with Facebook"
                 icon={<FontAwesome name="facebook" size={24} color="#1877F2" />}
+                disabled={isBusy}
+                onPress={() => handleSocialAuth("oauth_facebook")}
               />
               <SocialButton
                 label="Continue with Apple"
                 icon={<FontAwesome name="apple" size={24} color="#0D132B" />}
+                disabled={isBusy}
+                onPress={() => handleSocialAuth("oauth_apple")}
               />
             </View>
           </View>
@@ -200,11 +405,12 @@ export function AuthScreen({
 
       <VerificationModal
         visible={verificationVisible}
-        onClose={() => setVerificationVisible(false)}
-        onVerified={() => {
-          setVerificationVisible(false);
-          router.replace("/");
-        }}
+        code={verificationCode}
+        errorMessage={errorMessage}
+        isSubmitting={isBusy}
+        onClose={closeVerification}
+        onCodeChange={setVerificationCode}
+        onSubmit={handleVerificationSubmit}
       />
     </SafeAreaView>
   );

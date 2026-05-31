@@ -1,22 +1,36 @@
-import { Link } from "expo-router";
+import { useAuth } from "@clerk/expo";
+import { Link, Redirect } from "expo-router";
 import {
-  Image,
-  SafeAreaView,
-  Text,
-  TouchableOpacity,
-  View,
+    Image,
+    SafeAreaView,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { images } from "../constants/images";
 
 export default function Onboarding() {
+  const { isLoaded, isSignedIn } = useAuth();
+
+  if (!isLoaded) {
+    return <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }} />;
+  }
+
+  if (isSignedIn) {
+    return <Redirect href="/" />;
+  }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View className="flex-1 px-6 pt-6">
-        <View className="items-center">
+        <View className="flex-row items-center justify-center space-x-3">
           <Image
             source={images.mascotLogo}
-            style={{ width: 84, height: 36, resizeMode: "contain" }}
+            style={{ width: 36, height: 36, resizeMode: "contain" }}
           />
+          <Text className="text-2xl font-semibold text-[#0D132B]">
+            muolingo
+          </Text>
         </View>
 
         <View style={{ marginTop: 28 }}>

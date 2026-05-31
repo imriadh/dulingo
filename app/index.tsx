@@ -1,8 +1,19 @@
-import { Link } from "expo-router";
+import { useAuth } from "@clerk/expo";
+import { Link, Redirect } from "expo-router";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { images } from "../constants/images";
 
 export default function Index() {
+  const { isLoaded, isSignedIn } = useAuth();
+
+  if (!isLoaded) {
+    return <View className="flex-1 bg-white" />;
+  }
+
+  if (!isSignedIn) {
+    return <Redirect href="/onboarding" />;
+  }
+
   return (
     <View className="flex-1 items-center justify-center bg-white p-6">
       <Image

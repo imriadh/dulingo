@@ -1,5 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import {
     Keyboard,
     KeyboardAvoidingView,
@@ -14,36 +14,39 @@ import {
 type VerificationModalProps = {
   visible: boolean;
   onClose: () => void;
-  onVerified: () => void;
+  code: string;
+  onCodeChange: (code: string) => void;
+  onSubmit: (code: string) => void;
+  errorMessage: string | null;
+  isSubmitting: boolean;
 };
 
 export function VerificationModal({
   visible,
   onClose,
-  onVerified,
+  code,
+  onCodeChange,
+  onSubmit,
+  errorMessage,
+  isSubmitting,
 }: VerificationModalProps) {
-  const [code, setCode] = useState("");
   const inputRef = useRef<TextInput>(null);
 
   useEffect(() => {
     if (visible) {
-      setCode("");
       requestAnimationFrame(() => {
         inputRef.current?.focus();
       });
-      return;
     }
-
-    setCode("");
   }, [visible]);
 
   const handleChangeText = (value: string) => {
     const nextCode = value.replace(/\D/g, "").slice(0, 6);
-    setCode(nextCode);
+    onCodeChange(nextCode);
 
-    if (nextCode.length === 6) {
+    if (nextCode.length === 6 && !isSubmitting) {
       Keyboard.dismiss();
-      onVerified();
+      onSubmit(nextCode);
     }
   };
 
@@ -121,6 +124,7 @@ export function VerificationModal({
               maxLength={6}
               textContentType="oneTimeCode"
               autoFocus={visible}
+              editable={!isSubmitting}
               caretHidden
               style={{
                 position: "absolute",
@@ -138,6 +142,12 @@ export function VerificationModal({
                 Secure verification powered by email
               </Text>
             </View>
+
+            {errorMessage ? (
+              <Text className="mt-4 text-center text-[14px] text-[#E11D48]">
+                {errorMessage}
+              </Text>
+            ) : null}
           </Pressable>
         </Pressable>
       </KeyboardAvoidingView>
