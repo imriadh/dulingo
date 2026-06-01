@@ -1,0 +1,578 @@
+import type { Lesson } from "@/types/learning";
+
+export const lessons = [
+  {
+    id: "spanish-hello",
+    languageId: "spanish",
+    unitId: "spanish-basics-1",
+    title: "Hola",
+    subtitle: "Say hello in Spanish.",
+    kind: "greetings",
+    order: 1,
+    estimatedMinutes: 4,
+    xpReward: 10,
+    goal: {
+      title: "Greet someone politely",
+      description: "Learn the most common way to say hello and respond warmly.",
+      successCriteria: [
+        "Recognize hola as hello",
+        "Say hola with confidence",
+        "Match hello with the right translation",
+      ],
+    },
+    vocabulary: [
+      {
+        id: "spanish-hello-v1",
+        term: "hola",
+        translation: "hello",
+        partOfSpeech: "interjection",
+        example: "Hola, amigo.",
+      },
+      {
+        id: "spanish-hello-v2",
+        term: "amigo",
+        translation: "friend",
+        partOfSpeech: "noun",
+        example: "Mi amigo está aquí.",
+      },
+    ],
+    phrases: [
+      {
+        id: "spanish-hello-p1",
+        source: "Hola",
+        translation: "Hello",
+      },
+      {
+        id: "spanish-hello-p2",
+        source: "Hola, amigo.",
+        translation: "Hello, friend.",
+      },
+    ],
+    activities: [
+      {
+        id: "spanish-hello-a1",
+        type: "listen",
+        title: "Listen and tap",
+        instruction: "Hear the greeting and choose the English meaning.",
+        prompt: "Hola",
+        answer: "hello",
+        hint: "It is the most common Spanish greeting.",
+      },
+      {
+        id: "spanish-hello-a2",
+        type: "say",
+        title: "Say it aloud",
+        instruction: "Practice the greeting with a short voice response.",
+        prompt: "Use the Spanish greeting for hello.",
+        targetPhrase: "Hola",
+        pronunciationHint: "OH-lah",
+      },
+      {
+        id: "spanish-hello-a3",
+        type: "translate",
+        title: "Translate the phrase",
+        instruction: "Choose the correct English meaning.",
+        prompt: "Hola, amigo.",
+        answer: "Hello, friend.",
+        options: ["Hello, friend.", "Goodbye, friend.", "Thank you, friend."],
+      },
+    ],
+    aiTeacherPrompt: {
+      systemPrompt:
+        "You are a friendly Spanish teacher guiding a beginner through a short, audio-first lesson. Keep instructions simple, encourage the learner to repeat out loud, and wait after each prompt for a response.",
+      lessonContext:
+        "The learner is practicing the Spanish greeting hola and a basic friendly phrase.",
+      openingLine: "Vamos a practicar hola. Repeat after me when you're ready.",
+      coachingNotes: [
+        "Use short, warm sentences.",
+        "Model the pronunciation clearly: OH-lah.",
+        "Keep the pace slow and beginner-friendly.",
+      ],
+      encouragementLines: [
+        "Great, keep going.",
+        "Nice work. Try saying it one more time.",
+      ],
+      closingLine: "Perfect. You just learned your first Spanish greeting.",
+    },
+  },
+  {
+    id: "spanish-introduce-yourself",
+    languageId: "spanish",
+    unitId: "spanish-basics-1",
+    title: "Me llamo...",
+    subtitle: "Introduce yourself in Spanish.",
+    kind: "introductions",
+    order: 2,
+    estimatedMinutes: 4,
+    xpReward: 10,
+    goal: {
+      title: "Say your name",
+      description: "Learn a simple way to introduce yourself in Spanish.",
+      successCriteria: [
+        "Recognize me llamo as my name is",
+        "Say the full phrase slowly",
+        "Match the phrase with an introduction",
+      ],
+    },
+    vocabulary: [
+      {
+        id: "spanish-intro-v1",
+        term: "me llamo",
+        translation: "my name is",
+        example: "Me llamo Ana.",
+      },
+      {
+        id: "spanish-intro-v2",
+        term: "soy",
+        translation: "I am",
+        partOfSpeech: "verb",
+        example: "Soy Leo.",
+      },
+    ],
+    phrases: [
+      {
+        id: "spanish-intro-p1",
+        source: "Me llamo Ana.",
+        translation: "My name is Ana.",
+      },
+      {
+        id: "spanish-intro-p2",
+        source: "Soy Luis.",
+        translation: "I am Luis.",
+      },
+    ],
+    activities: [
+      {
+        id: "spanish-intro-a1",
+        type: "match",
+        title: "Match the meaning",
+        instruction: "Connect the Spanish phrase with the English meaning.",
+        prompt: "Match the phrases.",
+        pairs: [
+          { left: "Me llamo", right: "My name is" },
+          { left: "Soy", right: "I am" },
+        ],
+      },
+      {
+        id: "spanish-intro-a2",
+        type: "say",
+        title: "Say your name",
+        instruction: "Practice introducing yourself out loud.",
+        prompt: "Say 'My name is...' in Spanish.",
+        targetPhrase: "Me llamo...",
+        pronunciationHint: "meh YAH-moh",
+      },
+      {
+        id: "spanish-intro-a3",
+        type: "translate",
+        title: "Choose the translation",
+        instruction: "Pick the best English meaning.",
+        prompt: "Me llamo Ana.",
+        answer: "My name is Ana.",
+        options: ["My name is Ana.", "I am Ana.", "Hello Ana."],
+      },
+    ],
+    aiTeacherPrompt: {
+      systemPrompt:
+        "You are a supportive Spanish teacher for a beginner audio lesson. Prompt the learner to introduce themselves, give pronunciation help, and keep each turn short and clear.",
+      lessonContext:
+        "The learner is practicing simple self-introductions using me llamo and soy.",
+      openingLine:
+        "Now let's say your name in Spanish. Try the phrase with me.",
+      coachingNotes: [
+        "Break the phrase into small chunks.",
+        "Encourage the learner to repeat with confidence.",
+        "Offer one pronunciation hint at a time.",
+      ],
+      encouragementLines: [
+        "That sounded good.",
+        "Try it again a little slower.",
+      ],
+      closingLine: "Nice work. You can now say your name in Spanish.",
+    },
+  },
+  {
+    id: "french-hello",
+    languageId: "french",
+    unitId: "french-basics-1",
+    title: "Bonjour",
+    subtitle: "Say hello in French.",
+    kind: "greetings",
+    order: 1,
+    estimatedMinutes: 4,
+    xpReward: 10,
+    goal: {
+      title: "Use a polite greeting",
+      description: "Learn bonjour and when to use it.",
+      successCriteria: [
+        "Recognize bonjour as hello",
+        "Say bonjour aloud",
+        "Match the phrase to its meaning",
+      ],
+    },
+    vocabulary: [
+      {
+        id: "french-hello-v1",
+        term: "bonjour",
+        translation: "hello",
+        partOfSpeech: "interjection",
+        example: "Bonjour, Marie.",
+      },
+      {
+        id: "french-hello-v2",
+        term: "ami",
+        translation: "friend",
+        partOfSpeech: "noun",
+        example: "Mon ami est ici.",
+      },
+    ],
+    phrases: [
+      {
+        id: "french-hello-p1",
+        source: "Bonjour",
+        translation: "Hello",
+      },
+      {
+        id: "french-hello-p2",
+        source: "Bonjour, mon ami.",
+        translation: "Hello, my friend.",
+      },
+    ],
+    activities: [
+      {
+        id: "french-hello-a1",
+        type: "listen",
+        title: "Listen and choose",
+        instruction: "Hear the French greeting and choose the meaning.",
+        prompt: "Bonjour",
+        answer: "hello",
+        hint: "It is a polite greeting used during the day.",
+      },
+      {
+        id: "french-hello-a2",
+        type: "say",
+        title: "Say it aloud",
+        instruction: "Practice the greeting with a friendly voice.",
+        prompt: "Use the French greeting for hello.",
+        targetPhrase: "Bonjour",
+        pronunciationHint: "bohn-ZHOOR",
+      },
+      {
+        id: "french-hello-a3",
+        type: "translate",
+        title: "Translate the phrase",
+        instruction: "Choose the right English meaning.",
+        prompt: "Bonjour, mon ami.",
+        answer: "Hello, my friend.",
+        options: [
+          "Hello, my friend.",
+          "Good night, my friend.",
+          "Goodbye, my friend.",
+        ],
+      },
+    ],
+    aiTeacherPrompt: {
+      systemPrompt:
+        "You are a calm French teacher guiding a beginner through short spoken practice. Keep the lesson friendly, clear, and slow enough for a first-time learner.",
+      lessonContext:
+        "The learner is practicing bonjour and a friendly phrase with a simple pronunciation model.",
+      openingLine: "Let's start with bonjour. Repeat after me.",
+      coachingNotes: [
+        "Keep the voice warm and encouraging.",
+        "Model the sound slowly: bohn-ZHOOR.",
+        "Wait for the learner before continuing.",
+      ],
+      encouragementLines: ["Excellent.", "One more time, nice and slow."],
+      closingLine: "Great job. You just learned a basic French greeting.",
+    },
+  },
+  {
+    id: "french-meet-you",
+    languageId: "french",
+    unitId: "french-basics-1",
+    title: "Je m'appelle...",
+    subtitle: "Introduce yourself in French.",
+    kind: "introductions",
+    order: 2,
+    estimatedMinutes: 4,
+    xpReward: 10,
+    goal: {
+      title: "Introduce yourself",
+      description: "Use je m'appelle to say your name.",
+      successCriteria: [
+        "Recognize je m'appelle as my name is",
+        "Say the phrase out loud",
+        "Match it with a self-introduction",
+      ],
+    },
+    vocabulary: [
+      {
+        id: "french-intro-v1",
+        term: "je m'appelle",
+        translation: "my name is",
+        example: "Je m'appelle Nora.",
+      },
+      {
+        id: "french-intro-v2",
+        term: "je suis",
+        translation: "I am",
+        partOfSpeech: "verb",
+        example: "Je suis Leo.",
+      },
+    ],
+    phrases: [
+      {
+        id: "french-intro-p1",
+        source: "Je m'appelle Nora.",
+        translation: "My name is Nora.",
+      },
+      {
+        id: "french-intro-p2",
+        source: "Je suis Sam.",
+        translation: "I am Sam.",
+      },
+    ],
+    activities: [
+      {
+        id: "french-intro-a1",
+        type: "match",
+        title: "Match the phrases",
+        instruction: "Connect the French phrase with the English meaning.",
+        prompt: "Match the phrases.",
+        pairs: [
+          { left: "Je m'appelle", right: "My name is" },
+          { left: "Je suis", right: "I am" },
+        ],
+      },
+      {
+        id: "french-intro-a2",
+        type: "say",
+        title: "Say your name",
+        instruction: "Practice introducing yourself in French.",
+        prompt: "Say 'My name is...' in French.",
+        targetPhrase: "Je m'appelle...",
+        pronunciationHint: "zhuh mah-pel",
+      },
+      {
+        id: "french-intro-a3",
+        type: "translate",
+        title: "Choose the meaning",
+        instruction: "Pick the best English translation.",
+        prompt: "Je m'appelle Nora.",
+        answer: "My name is Nora.",
+        options: ["My name is Nora.", "I am Nora.", "Hello Nora."],
+      },
+    ],
+    aiTeacherPrompt: {
+      systemPrompt:
+        "You are a supportive French teacher running a beginner-friendly audio lesson. Use short prompts, encourage repetition, and keep the learner focused on one phrase at a time.",
+      lessonContext:
+        "The learner is practicing the French introduction phrase je m'appelle.",
+      openingLine: "Now introduce yourself in French. Let's try it together.",
+      coachingNotes: [
+        "Guide the learner in small steps.",
+        "Keep pronunciation hints simple.",
+        "Use warm, encouraging reinforcement.",
+      ],
+      encouragementLines: ["Good work.", "Say it once more with confidence."],
+      closingLine: "Nice. You can now introduce yourself in French.",
+    },
+  },
+  {
+    id: "japanese-hello",
+    languageId: "japanese",
+    unitId: "japanese-basics-1",
+    title: "こんにちは",
+    subtitle: "Say hello in Japanese.",
+    kind: "greetings",
+    order: 1,
+    estimatedMinutes: 4,
+    xpReward: 10,
+    goal: {
+      title: "Use a common greeting",
+      description: "Learn one of the most useful Japanese greetings.",
+      successCriteria: [
+        "Recognize こんにちは as hello",
+        "Say the phrase out loud",
+        "Understand when to use it",
+      ],
+    },
+    vocabulary: [
+      {
+        id: "japanese-hello-v1",
+        term: "こんにちは",
+        transliteration: "konnichiwa",
+        translation: "hello",
+        partOfSpeech: "greeting",
+        example: "こんにちは、ミナです。",
+      },
+      {
+        id: "japanese-hello-v2",
+        term: "ともだち",
+        transliteration: "tomodachi",
+        translation: "friend",
+        partOfSpeech: "noun",
+        example: "ともだちと話します。",
+      },
+    ],
+    phrases: [
+      {
+        id: "japanese-hello-p1",
+        source: "こんにちは",
+        transliteration: "konnichiwa",
+        translation: "Hello",
+      },
+      {
+        id: "japanese-hello-p2",
+        source: "こんにちは、ともだち。",
+        transliteration: "konnichiwa, tomodachi.",
+        translation: "Hello, friend.",
+      },
+    ],
+    activities: [
+      {
+        id: "japanese-hello-a1",
+        type: "listen",
+        title: "Listen and choose",
+        instruction: "Hear the Japanese greeting and choose the meaning.",
+        prompt: "こんにちは",
+        answer: "hello",
+        hint: "It is a friendly daytime greeting.",
+      },
+      {
+        id: "japanese-hello-a2",
+        type: "say",
+        title: "Say it aloud",
+        instruction: "Practice the greeting with a short voice response.",
+        prompt: "Use the Japanese greeting for hello.",
+        targetPhrase: "こんにちは",
+        pronunciationHint: "konnichiwa",
+      },
+      {
+        id: "japanese-hello-a3",
+        type: "translate",
+        title: "Translate the phrase",
+        instruction: "Choose the correct English meaning.",
+        prompt: "こんにちは、ともだち。",
+        answer: "Hello, friend.",
+        options: ["Hello, friend.", "Goodbye, friend.", "Thank you, friend."],
+      },
+    ],
+    aiTeacherPrompt: {
+      systemPrompt:
+        "You are a friendly Japanese teacher leading a simple audio lesson for a beginner. Speak slowly, model pronunciation carefully, and invite the learner to repeat each phrase.",
+      lessonContext:
+        "The learner is practicing the Japanese greeting こんにちは and a short friendly phrase.",
+      openingLine: "Let's practice こんにちは together. Repeat after me.",
+      coachingNotes: [
+        "Keep each instruction brief.",
+        "Use a natural but slow pace.",
+        "Offer pronunciation support with romaji if needed.",
+      ],
+      encouragementLines: [
+        "Great start.",
+        "Try it one more time with the same rhythm.",
+      ],
+      closingLine: "Excellent. You just learned your first Japanese greeting.",
+    },
+  },
+  {
+    id: "japanese-thanks",
+    languageId: "japanese",
+    unitId: "japanese-basics-1",
+    title: "ありがとう",
+    subtitle: "Say thank you in Japanese.",
+    kind: "review",
+    order: 2,
+    estimatedMinutes: 4,
+    xpReward: 10,
+    goal: {
+      title: "Say thank you",
+      description: "Learn a simple, polite way to express thanks.",
+      successCriteria: [
+        "Recognize ありがとう as thank you",
+        "Say the word aloud",
+        "Match the phrase with the correct meaning",
+      ],
+    },
+    vocabulary: [
+      {
+        id: "japanese-thanks-v1",
+        term: "ありがとう",
+        transliteration: "arigatou",
+        translation: "thank you",
+        partOfSpeech: "greeting",
+        example: "ありがとう、先生。",
+      },
+      {
+        id: "japanese-thanks-v2",
+        term: "せんせい",
+        transliteration: "sensei",
+        translation: "teacher",
+        partOfSpeech: "noun",
+        example: "せんせいにありがとうと言います。",
+      },
+    ],
+    phrases: [
+      {
+        id: "japanese-thanks-p1",
+        source: "ありがとう",
+        transliteration: "arigatou",
+        translation: "Thank you",
+      },
+      {
+        id: "japanese-thanks-p2",
+        source: "ありがとう、せんせい。",
+        transliteration: "arigatou, sensei.",
+        translation: "Thank you, teacher.",
+      },
+    ],
+    activities: [
+      {
+        id: "japanese-thanks-a1",
+        type: "listen",
+        title: "Listen and choose",
+        instruction: "Hear the Japanese word and choose the meaning.",
+        prompt: "ありがとう",
+        answer: "thank you",
+        hint: "It is used to show gratitude.",
+      },
+      {
+        id: "japanese-thanks-a2",
+        type: "say",
+        title: "Say it aloud",
+        instruction: "Practice the polite word for thank you.",
+        prompt: "Use the Japanese word for thank you.",
+        targetPhrase: "ありがとう",
+        pronunciationHint: "arigatou",
+      },
+      {
+        id: "japanese-thanks-a3",
+        type: "translate",
+        title: "Translate the phrase",
+        instruction: "Choose the correct English meaning.",
+        prompt: "ありがとう、せんせい。",
+        answer: "Thank you, teacher.",
+        options: [
+          "Thank you, teacher.",
+          "Hello, teacher.",
+          "Goodbye, teacher.",
+        ],
+      },
+    ],
+    aiTeacherPrompt: {
+      systemPrompt:
+        "You are a patient Japanese teacher running a beginner audio lesson. Keep the learner focused on one short phrase, explain pronunciation slowly, and encourage repetition.",
+      lessonContext:
+        "The learner is practicing ありがとう as a simple way to say thank you.",
+      openingLine: "Let's practice a polite way to say thank you in Japanese.",
+      coachingNotes: [
+        "Use calm, encouraging pacing.",
+        "Repeat the word clearly if the learner needs help.",
+        "Keep the interaction short and focused.",
+      ],
+      encouragementLines: ["Nice work.", "Say it once more to lock it in."],
+      closingLine: "Great job. You can now say thank you in Japanese.",
+    },
+  },
+] as const satisfies ReadonlyArray<Lesson>;

@@ -11,13 +11,19 @@ import { fonts } from "../constants/fonts";
 
 WebBrowser.maybeCompleteAuthSession();
 
-const publishableKey =
-  process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ??
-  process.env.VITE_CLERK_PUBLISHABLE_KEY;
+function getPublishableKey(): string {
+  const key =
+    process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ??
+    process.env.VITE_CLERK_PUBLISHABLE_KEY;
 
-if (!publishableKey) {
-  throw new Error("Add your Clerk publishable key to the environment.");
+  if (!key) {
+    throw new Error("Add your Clerk publishable key to the environment.");
+  }
+
+  return key;
 }
+
+const publishableKey = getPublishableKey();
 
 export default function RootLayout() {
   const [loaded] = useFonts({

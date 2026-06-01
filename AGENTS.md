@@ -474,7 +474,43 @@ Use:
 - AsyncStorage for persistence
 - backend only for secure operations
 
----
+---## Error Handling & UX
+
+- Always provide visual feedback for user actions (loading spinners, success toasts, error messages).
+- Use a consistent toast/notification system for non-blocking alerts.
+- Catch all async errors and display user-friendly messages.
+- Log errors to console for debugging but never expose raw error objects to the UI.
+
+## Accessibility (A11y)
+
+- All interactive elements must have `accessibilityLabel` and `accessibilityRole`.
+- Ensure sufficient color contrast for text.
+- Test with screen readers (VoiceOver/TalkBack) for critical flows.
+
+## Navigation Rules
+
+- Use `router.push` for forward navigation and `router.replace` for authentication redirects.
+- Protect routes using layout groups `(auth)` and `(tabs)`.
+- Handle deep links if applicable by defining strict path patterns in `app.json`.
+
+## Icon Usage
+
+- Use `@expo/vector-icons` (or specified library) for all icons.
+- Create a reusable `Icon` component in `components/ui/Icon.tsx` to standardize size and color props.
+- Do not import icon components directly in screens; use the wrapper.
+
+## Performance Guidelines
+
+- Memoize expensive calculations using `useMemo`.
+- Use `React.memo` for list items or complex components that receive stable props.
+- Avoid creating new objects/arrays in JSX props to prevent unnecessary re-renders.
+- Optimize images: use correct dimensions and compress assets.
+
+## Documentation & Comments
+
+- Since this is a teaching project, add JSDoc comments to complex hooks and utilities.
+- Explain the "why" behind non-obvious implementation choices.
+- Keep comments concise and up-to-date.
 
 ## Final Reminder
 
